@@ -7,13 +7,11 @@ classdef FourierImageAnalysisModel < handle
         Resolution=[1 1 1]; % units chosen/pixel  (for exemple if unit is µm frequency would be given in  1/µm
         ImageSize
         FftImageSize
-        ImageCenter
         FftImageCenter
         qr
         dqr
         qth
         freq
-        freq2
         Fsz
         Fszdth
         keepzero
@@ -23,7 +21,6 @@ classdef FourierImageAnalysisModel < handle
         Msr
         V
         Wavelength
-        Wavelength2
         Wavelengthmax
         Wavelengthnum
         WavelengthAmplitude
@@ -41,7 +38,7 @@ classdef FourierImageAnalysisModel < handle
             p = inputParser;
             addParameter(p, 'Image', @isnumeric);
             addParameter(p, 'Resolution',[1, 1, 1], @isnumeric);
-            addParameter(p, 'qr',linspace(0,1.2,1024), @isnumeric);
+            addParameter(p, 'qr',linspace(0,0.5,512), @isnumeric);
             addParameter(p, 'DeltaT',1, @isnumeric);
             addParameter(p, 'keepzero', 0, @isnumeric);
             addParameter(p, 'Windowing', 1, @isnumeric);
@@ -53,7 +50,6 @@ classdef FourierImageAnalysisModel < handle
             FIA.DeltaT = p.Results.DeltaT;
             FIA.keepzero=p.Results.keepzero;
             FIA.Windowing=p.Results.Windowing;
-            FIA.ImageCenter = (FIA.ImageSize + bitget(abs(FIA.ImageSize),1))/2 + ~bitget(abs(FIA.ImageSize),1);
             FIA.ImageSize = size(FIA.Image);
             
             
@@ -151,11 +147,8 @@ classdef FourierImageAnalysisModel < handle
                     FIA.Width50=(Width-1)*FIA.dqr+FIA.qr(1);
                     ind50=FIA.Widthnum50(1):FIA.Widthnum50(2);
                     qm50=sum(FIA.qr(ind50).*FIA.Msz(ind50))/sum(FIA.Msz(ind50));
-                    qm502=sum((FIA.qr(ind50)).^2.*FIA.Msz(ind50))/sum(FIA.Msz(ind50));
                     FIA.Wavelength=1/qm50;
                     FIA.freq=qm50;
-                    FIA.freq2=qm502;
-                    FIA.Wavelength2=1/qm502;
                 else
                     FIA.Wavelength=FIA.Wavelengthmax;
                 end
